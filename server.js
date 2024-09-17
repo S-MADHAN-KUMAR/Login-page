@@ -19,15 +19,7 @@ app.use(session({
   saveUninitialized: true,
 }));
 
-
-app.get('/', (req, res) => {
-  if (req.session.user) {
-    res.redirect('/home'); 
-  } else {
-    res.render('login'); 
-  }
-});
-
+//Login validation 
 
 app.post('/verify', (req, res) => {
   if (req.body.name === username && req.body.password === userpassword) {
@@ -40,13 +32,27 @@ app.post('/verify', (req, res) => {
   }
 });
 
+//home page 
 
 app.get('/home', (req, res) => {
-  if (req.session.user) {
-    res.render('home'); 
-  } else {
-    res.redirect('/');  }})
+  if (!req.session.user) {
+    res.redirect('/');  }
+    else{
+      res.render('home');
+    }
+}) 
 
+//Login Check
+
+    app.get('/', (req, res) => {
+      if (req.session.user) {
+        res.render('home'); 
+      } else {
+        res.render('login'); 
+      }
+    });
+
+//Logout 
 
 app.get('/logout', (req, res) => {
   req.session.destroy();  
