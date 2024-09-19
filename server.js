@@ -11,7 +11,6 @@ const userpassword = 'admin123';
 app.use(express.static('public'));
 app.set('view engine', 'hbs');
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 app.use(nocache());
 app.use(session({
   secret: 'Keyboard cat',
@@ -19,13 +18,30 @@ app.use(session({
   saveUninitialized: true,
 }));
 
+
+//Login Check
+
+app.get('/', (req, res) => {
+  if (req.session.user) {
+    res.render('home'); 
+  } else {
+    res.render('login'); 
+  }
+});
+
 //Login validation 
 
 app.post('/verify', (req, res) => {
   if (req.body.name === username && req.body.password === userpassword) {
     req.session.user = req.body.name;  
     res.redirect('/home');  
-  } else {
+  } 
+  else if (req.body.name === "" || req.body.password === ""){
+    res.render('login', {
+      message: '☠ Enter the Details ☠ '  
+    });
+  }
+  else {
     res.render('login', {
       message: '☠ Login failed ☠ '  
     });
@@ -42,16 +58,6 @@ app.get('/home', (req, res) => {
     }
 }) 
 
-//Login Check
-
-    app.get('/', (req, res) => {
-      if (req.session.user) {
-        res.render('home'); 
-      } else {
-        res.render('login'); 
-      }
-    });
-
 //Logout 
 
 app.get('/logout', (req, res) => {
@@ -60,4 +66,4 @@ app.get('/logout', (req, res) => {
 });
 
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+app.listen(5000, () => console.log("Server running on port 3000"));
